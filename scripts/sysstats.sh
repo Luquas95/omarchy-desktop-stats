@@ -230,6 +230,16 @@ else
   docker_lines=("(docker not installed)")
 fi
 
+# --- Top 3 CPU-consuming processes ---
+# Processes younger than 2s are excluded: ps's %cpu (cputime/etime) is
+# noisy/inflated for just-started processes, which would otherwise make
+# this script's own short-lived helpers (ps, awk, itself) show up.
+top_proc_lines=()
+if have ps; then
+  mapfile -t top_proc_lines < <(ps -eo comm,%cpu,etimes --sort=-%cpu --no-headers |
+    awk '$3>=2 {printf "%s: %s%%\n", $1, $2}' | head -n 3)
+fi
+
 # --- Build plain-text lines to measure the widest one ---
 cpu_line="CPU: ${cpu}%"
 ram_line="RAM: ${mem_used_gib} / ${mem_total_gib} GiB (${mem_pct}%)"
@@ -247,7 +257,7 @@ max_len=0
 for line in "$cpu_line" "$ram_line" "$swap_line" "$disk_line" "$uptime_line" \
             "$temp_pkg_line" "$core_temp_line" \
             "$ssid_line" "$ip_line" "$vps_line" "$ts_line" "$net_line" \
-            "${docker_lines[@]}"; do
+            "${docker_lines[@]}" "${top_proc_lines[@]}"; do
   len=${#line}
   ((len > max_len)) && max_len=$len
 done
@@ -300,6 +310,15 @@ for line in "${docker_lines[@]}"; do
   [ "$docker_available" -eq 0 ] && color="$COLOR_DIM"
   lines+=("<span foreground='${color}'>${line}</span>")
 done
+
+if [ ${#top_proc_lines[@]} -gt 0 ]; then
+  lines+=("")
+  lines+=("$rule_line")
+  lines+=("<span foreground='$COLOR_LABEL'>Top Processes:</span>")
+  for line in "${top_proc_lines[@]}"; do
+    lines+=("<span foreground='$COLOR_OK'>${line}</span>")
+  done
+fi
 
 out=""
 first=1

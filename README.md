@@ -27,6 +27,7 @@ stays under every normal application window.
 - **Uptime**
 - **Wi-Fi** — SSID, local IP, public IP, Tailscale IP, live ↑/↓ throughput
 - **Docker** — currently running containers
+- **Top processes** — 3 most CPU-hungry processes on the system
 
 All panels update every second. Every data source above is optional and
 degrades gracefully — if you don't have Docker, Tailscale, a Wi-Fi card, or
