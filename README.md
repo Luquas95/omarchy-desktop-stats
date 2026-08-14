@@ -2,6 +2,7 @@
 
 Conky-style desktop stats widget for Omarchy (Hyprland) — that actually stays behind your windows.
 
+[![Release](https://img.shields.io/github/v/release/Luquas95/omarchy-desktop-stats)](https://github.com/Luquas95/omarchy-desktop-stats/releases)
 [![Platform](https://img.shields.io/badge/platform-Omarchy%20%2F%20Hyprland-blue?logo=linux&logoColor=white)](https://omarchy.org/)
 [![Shell](https://img.shields.io/badge/language-bash-green)](https://www.gnu.org/software/bash/)
 [![License](https://img.shields.io/badge/license-MIT-yellow)](https://opensource.org/license/MIT)
@@ -95,6 +96,10 @@ Because it doesn't work — see [Why this exists](#why-this-exists) above.
 `omarchy-desktop-stats` is a thin waybar-based replacement that only
 covers the always-on-desktop-widget use case, not conky's full Lua
 scripting engine.
+
+## Contributors
+
+- [Luquas95](https://github.com/Luquas95) — creator & maintainer
 
 ## License
 
