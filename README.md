@@ -1,7 +1,13 @@
 # omarchy-desktop-stats
 
-A conky-style system stats widget for [Omarchy](https://omarchy.org/) (Hyprland) that
-actually stays **behind** your application windows.
+Conky-style desktop stats widget for Omarchy (Hyprland) — that actually stays behind your windows.
+
+[![Platform](https://img.shields.io/badge/platform-Omarchy%20%2F%20Hyprland-blue?logo=linux&logoColor=white)](https://omarchy.org/)
+[![Shell](https://img.shields.io/badge/language-bash-green)](https://www.gnu.org/software/bash/)
+[![License](https://img.shields.io/badge/license-MIT-yellow)](https://opensource.org/license/MIT)
+[![Stars](https://img.shields.io/github/stars/Luquas95/omarchy-desktop-stats?style=social)](https://github.com/Luquas95/omarchy-desktop-stats)
+
+![screenshot](docs/screenshot.png)
 
 ## Why this exists
 
@@ -16,19 +22,20 @@ stays under every normal application window.
 
 ## What it shows
 
-- CPU temperature (package + per-core, if your hardware exposes it)
-- CPU / RAM / Swap / Disk usage, each with a color-coded progress bar
-  (green / orange / red based on load)
-- Uptime
-- Wi-Fi SSID, local IP, public IP, Tailscale IP, network throughput
-- Running Docker containers
+- **CPU temperature** — package/overall + per-core (Intel `coretemp`, AMD `k10temp`/`zenpower`, or a thermal-zone fallback)
+- **CPU / RAM / Swap / Disk** — usage with color-coded bars (green / orange / red by load)
+- **Uptime**
+- **Wi-Fi** — SSID, local IP, public IP, Tailscale IP, live ↑/↓ throughput
+- **Docker** — currently running containers
 
-Everything is optional and degrades gracefully: if you don't have Docker,
-Tailscale, a Wi-Fi card, or an Intel/AMD temperature sensor, that row is
-either hidden or shown with a clear fallback instead of breaking the panel.
+All panels update every second. Every data source above is optional and
+degrades gracefully — if you don't have Docker, Tailscale, a Wi-Fi card, or
+a supported temperature sensor, that row is hidden or shown with a clear
+fallback instead of breaking the panel.
 
 ## Requirements
 
+- Omarchy (Hyprland) — this relies on wlr-layer-shell and Omarchy's waybar/Hyprland config layout
 - **waybar** (required — this *is* a waybar instance)
 
 Everything else is optional; missing tools just mean that row shows a
@@ -42,10 +49,10 @@ fallback instead of real data:
 | `iwctl` (iwd) or `nmcli` (NetworkManager) | Wi-Fi SSID |
 | Intel `coretemp` / AMD `k10temp` / `zenpower` hwmon driver | CPU temperature |
 
-## Install
+## Installation
 
-```sh
-git clone https://github.com/<you>/omarchy-desktop-stats.git
+```bash
+git clone https://github.com/Luquas95/omarchy-desktop-stats.git
 cd omarchy-desktop-stats
 ./install.sh
 ```
@@ -54,37 +61,39 @@ This copies the panel files into `~/.config/waybar/`, adds an `exec-once`
 line to `~/.config/hypr/autostart.conf` (only if one isn't already there),
 and starts the panel immediately so you don't need to log out.
 
+To remove it again:
+
+```bash
+./uninstall.sh
+```
+
 ## Configure
 
 Copy the example config and edit it:
 
-```sh
+```bash
 cp ~/.config/waybar/desktop-stats.conf.example ~/.config/waybar/desktop-stats.conf
 ```
 
-It lets you override the color thresholds, colors, which disk path is
-reported, which network interface is used (auto-detected by default via the
-default route), and the public-IP lookup service/cache time. See the
-comments in the file for details.
+| Setting | Default | Meaning |
+|---|---|---|
+| `WARN_THRESHOLD` / `CRIT_THRESHOLD` | `60` / `85` | percent thresholds where a bar turns orange / red |
+| `COLOR_OK` / `COLOR_WARN` / `COLOR_CRIT` / `COLOR_LABEL` / `COLOR_DIM` | green/orange/red/dim-green/gray | bar and text colors |
+| `DISK_PATH` | `/` | filesystem path the "Disk" row reports on |
+| `NET_IFACE` | auto (default route) | force a specific network interface |
+| `PUBLIC_IP_TTL` | `300` | seconds between public-IP lookups |
+| `PUBLIC_IP_URL` | `https://icanhazip.com` | service used for the public-IP lookup |
 
 To change position, size, or opacity, edit `desktop-stats.jsonc` (layer
-margin, panel background) and `desktop-stats.css` (font size, padding,
-colors) directly.
+margin) and `desktop-stats.css` (font size, padding, colors) directly in
+`~/.config/waybar/`.
 
-## Uninstall
+## Why not conky?
 
-```sh
-./uninstall.sh
-```
-
-## How the "reaches the edge" progress bars work
-
-The bars are plain monospace text (`▄` half-block glyphs), not a real GTK
-widget — waybar custom modules only render Pango-marked-up text. Each
-refresh, the script measures the longest line it's about to print (across
-every section, including the Docker container list) and sizes every bar to
-that exact character width, so the bars start and end flush with the rest
-of the content instead of trailing off early.
+Because it doesn't work — see [Why this exists](#why-this-exists) above.
+`omarchy-desktop-stats` is a thin waybar-based replacement that only
+covers the always-on-desktop-widget use case, not conky's full Lua
+scripting engine.
 
 ## License
 
