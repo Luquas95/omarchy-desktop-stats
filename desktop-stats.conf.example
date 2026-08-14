@@ -1,0 +1,27 @@
+# Optional overrides for sysstats.sh.
+# Copy this file to ~/.config/waybar/desktop-stats.conf and uncomment what you
+# want to change. Anything not set here falls back to the script's defaults.
+
+# Progress-bar color thresholds (percent). Below WARN = green, below CRIT = orange, above = red.
+#WARN_THRESHOLD=60
+#CRIT_THRESHOLD=85
+
+# Colors (Pango/GTK hex).
+#COLOR_OK="#33ff33"
+#COLOR_WARN="#ffa500"
+#COLOR_CRIT="#ff3333"
+#COLOR_LABEL="#4d9950"
+#COLOR_DIM="#3a3a3a"
+
+# Filesystem path the "Disk" row reports on.
+#DISK_PATH="/"
+
+# Network interface to read Wi-Fi/IP/throughput from. Leave unset to
+# auto-detect the interface that owns the default route.
+#NET_IFACE="wlan0"
+
+# How long (seconds) to cache the public IP lookup for the "VPS" row.
+#PUBLIC_IP_TTL=300
+
+# Service used to look up the public IP.
+#PUBLIC_IP_URL="https://icanhazip.com"

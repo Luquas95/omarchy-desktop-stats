@@ -1,0 +1,15 @@
+* {
+  font-family: "JetBrainsMono Nerd Font", monospace;
+}
+
+window#waybar {
+  background: transparent;
+}
+
+#custom-sysstats {
+  font-size: 13px;
+  color: #33ff33;
+  background: rgba(20, 20, 20, 0.55);
+  padding: 13px 15px;
+  border-radius: 8px;
+}

@@ -1,0 +1,16 @@
+{
+  "layer": "bottom",
+  "position": "top",
+  "exclusive": false,
+  "passthrough": true,
+  "margin": "40px 40px 0 0",
+  "modules-left": [],
+  "modules-center": [],
+  "modules-right": ["custom/sysstats"],
+  "custom/sysstats": {
+    "exec": "~/.config/waybar/scripts/sysstats.sh",
+    "return-type": "json",
+    "interval": 1,
+    "tooltip": false
+  }
+}
