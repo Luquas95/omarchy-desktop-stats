@@ -2,14 +2,36 @@
   font-family: "JetBrainsMono Nerd Font", monospace;
 }
 
+/* Puvodni design (github.com/Luquas95/omarchy-desktop-stats) ma
+ * window#waybar: transparent - jen zaobleny box ma pozadi, tapeta
+ * prosviti kolem nej pres rgba(20,20,20,0.55). Zmereno pixel po pixelu
+ * (grim + magick pixel sample): na tomhle stroji (stary Intel iGPU,
+ * i915) se tahle plocha VZDY sklada s CERNOU, ne se skutecnou tapetou
+ * pod ni - bez ohledu na alpha hodnotu nebo na to, jestli je okno
+ * transparent nebo ne. Neni to blikani ani startup race, je to trvale.
+ *
+ * Box ma proto pevnou barvu dopocitanou tak, jak by rgba(20,20,20,0.55)
+ * vypadalo SPRAVNE nad aktualni tapetou (vzorek rgb(0,50,77) v miste
+ * widgetu): rgba(20,20,20,0.55) pres rgb(0,50,77) = rgb(11,34,46).
+ *
+ * Border-radius na GTK layer-shell okne se orizne jen kdyz je okno
+ * transparent - a v tom oriznutem rohovem kousku se pak znovu projevi
+ * ta rozbita kompozice (cerny "zoubek" mist tapety). Misto transparent
+ * ma proto okno rovnou barvu samotne tapety (staticky vzorek, stejny
+ * trik jako u boxu) - roh tak splyne se skutecnou tapetou vedle nej,
+ * misto aby ukazoval cernou. Pri zmene tapety je potreba prevzorkovat
+ * obe barvy (~/.config/omarchy/current/theme/backgrounds/wall.png). */
 window#waybar {
-  background: transparent;
+  background: rgb(0, 50, 77);
 }
 
 #custom-sysstats {
   font-size: 13px;
   color: #33ff33;
-  background: rgba(20, 20, 20, 0.55);
+  background: rgb(11, 34, 46);
   padding: 13px 15px;
-  border-radius: 8px;
+  /* border-radius zpet na 0: i par pixelu antialiasingu na oblouku
+   * pada na cernou (viz komentar u window#waybar vyse) - hranate rohy
+   * jsou jedina 100% cista varianta na tomhle HW. */
+  border-radius: 0;
 }
