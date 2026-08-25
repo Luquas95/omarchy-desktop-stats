@@ -90,6 +90,51 @@ To change position, size, or opacity, edit `desktop-stats.jsonc` (layer
 margin) and `desktop-stats.css` (font size, padding, colors) directly in
 `~/.config/waybar/`.
 
+### If you change your wallpaper
+
+The shipped `desktop-stats.css` doesn't use real transparency
+(`background: transparent` / `rgba(...)`) — on some GPUs (older Intel
+iGPUs in particular, e.g. Haswell/i915) the Wayland compositor never
+composites a transparent or semi-transparent `wlr-layer-shell` surface
+against what's actually behind it; it just renders black, permanently,
+not only on startup. So instead `window#waybar` and `#custom-sysstats`
+in `desktop-stats.css` are solid colors *precomputed* to look like the
+correct blend over one specific wallpaper.
+
+That means **the colors are pinned to whatever wallpaper you had when
+you set them up** — switching wallpapers won't make the panel
+transparent again, it'll just look like a solid box that no longer
+matches the background behind it. To re-tune it for a new wallpaper:
+
+1. Sample the wallpaper's color at roughly the spot the panel sits
+   (top-right corner by default):
+   ```bash
+   magick ~/.config/omarchy/current/theme/backgrounds/wall.png \
+     -crop 400x400+1500+0 -resize 1x1 txt:-
+   ```
+2. Recompute the blend (`rgba(20,20,20,0.55)` over that sampled color):
+   ```bash
+   python3 -c "
+   r, g, b = 0, 50, 77  # replace with the sampled rgb
+   a = 0.55
+   print(f'rgb({a*20+(1-a)*r:.0f},{a*20+(1-a)*g:.0f},{a*20+(1-a)*b:.0f})')
+   "
+   ```
+3. Put that result in `#custom-sysstats { background: ... }`, and put
+   the *raw sampled* wallpaper color (from step 1) in
+   `window#waybar { background: ... }` — that one isn't blended, it's
+   there to make the panel's outer edge (and its square corners —
+   `border-radius` is 0 for the same reason) match the wallpaper it
+   sits on.
+
+If your compositor *does* composite transparency correctly, skip all
+of this and just use real transparency instead — it'll look better and
+won't need re-tuning per wallpaper:
+```css
+window#waybar { background: transparent; }
+#custom-sysstats { background: rgba(20, 20, 20, 0.55); border-radius: 8px; }
+```
+
 ## Why not conky?
 
 Because it doesn't work — see [Why this exists](#why-this-exists) above.
