@@ -4,15 +4,19 @@
 
 /* Puvodni design (github.com/Luquas95/omarchy-desktop-stats) ma
  * window#waybar: transparent - jen zaobleny box ma pozadi, tapeta
- * prosviti kolem nej pres rgba(20,20,20,0.55). Zmereno pixel po pixelu
+ * prosviti kolem nej pres rgba(...). Zmereno pixel po pixelu
  * (grim + magick pixel sample): na tomhle stroji (stary Intel iGPU,
  * i915) se tahle plocha VZDY sklada s CERNOU, ne se skutecnou tapetou
  * pod ni - bez ohledu na alpha hodnotu nebo na to, jestli je okno
  * transparent nebo ne. Neni to blikani ani startup race, je to trvale.
  *
- * Box ma proto pevnou barvu dopocitanou tak, jak by rgba(20,20,20,0.55)
- * vypadalo SPRAVNE nad aktualni tapetou (vzorek rgb(0,50,77) v miste
- * widgetu): rgba(20,20,20,0.55) pres rgb(0,50,77) = rgb(11,34,46).
+ * Box ma proto pevnou barvu dopocitanou tak, jak by rgba(170,170,170,0.45)
+ * (svetlejsi seda, 45% pruhlednost) vypadalo SPRAVNE nad aktualni
+ * tapetou. Po migraci Omarchy -> Arch+Sway (2026-08-30) je tapeta
+ * ~/Documents/wall.jpg (drive omarchy theme symlink), vzorek pod
+ * widgetem (souradnice z margin v desktop-stats.jsonc, mapovane pres
+ * swaybg "fill"/cover na 1920x1080 original): rgb(65,65,65).
+ * rgba(170,170,170,0.45) pres rgb(65,65,65) = rgb(112,112,112).
  *
  * Border-radius na GTK layer-shell okne se orizne jen kdyz je okno
  * transparent - a v tom oriznutem rohovem kousku se pak znovu projevi
@@ -20,15 +24,15 @@
  * ma proto okno rovnou barvu samotne tapety (staticky vzorek, stejny
  * trik jako u boxu) - roh tak splyne se skutecnou tapetou vedle nej,
  * misto aby ukazoval cernou. Pri zmene tapety je potreba prevzorkovat
- * obe barvy (~/.config/omarchy/current/theme/backgrounds/wall.png). */
+ * obe barvy (~/Documents/wall.jpg). */
 window#waybar {
-  background: rgb(0, 50, 77);
+  background: rgb(65, 65, 65);
 }
 
 #custom-sysstats {
   font-size: 13px;
   color: #33ff33;
-  background: rgb(11, 34, 46);
+  background: rgb(112, 112, 112);
   padding: 13px 15px;
   /* border-radius zpet na 0: i par pixelu antialiasingu na oblouku
    * pada na cernou (viz komentar u window#waybar vyse) - hranate rohy
